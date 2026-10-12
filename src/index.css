@@ -1,0 +1,86 @@
+@import "tailwindcss";
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@600;700;800&display=swap');
+
+@theme {
+  --color-brand-primary: var(--brand-primary);
+  --color-brand-secondary: var(--brand-secondary);
+  --color-brand-accent: var(--brand-accent);
+  --color-brand-soft: var(--brand-soft);
+  --color-surface-background: var(--surface-background);
+  --color-surface-card: var(--surface-card);
+  --color-surface-border: var(--surface-border);
+  --color-text-heading: var(--text-heading);
+  --color-text-body: var(--text-body);
+  --color-text-muted: var(--text-muted);
+
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-display: 'Montserrat', system-ui, sans-serif;
+}
+
+:root {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+
+  /* Light Theme Palette */
+  --surface-background: #F9FAFB;
+  --surface-card: #FFFFFF;
+  --surface-border: #E5E7EB;
+  --text-heading: #111827;
+  --text-body: #4B5563;
+  --text-muted: #6B7280;
+  --brand-primary: #4F46E5;
+  --brand-secondary: #3730A3;
+  --brand-accent: #F59E0B;
+  --brand-soft: #EEF2FF;
+}
+
+[data-theme='dark'] {
+  /* Dark Theme Palette - Layered Slate */
+  --surface-background: #0F172A;
+  --surface-card: #1E293B;
+  --surface-border: #334155;
+  --text-heading: #F8FAFC;
+  --text-body: #94A3B8;
+  --text-muted: #64748B;
+  --brand-primary: #818CF8;
+  --brand-secondary: #4F46E5;
+  --brand-accent: #FBBF24;
+  --brand-soft: #1E293B;
+}
+
+body {
+  margin: 0;
+  background-color: var(--surface-background);
+  color: var(--text-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Montserrat', sans-serif;
+  color: var(--text-heading);
+  text-wrap: balance;
+}
+
+/* Accessibility: High-visibility focus rings for keyboard users */
+:focus-visible {
+  outline: 2px solid var(--brand-primary);
+  outline-offset: 2px;
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Custom selection color */
+::selection {
+  background-color: var(--brand-primary);
+  color: white;
+}
