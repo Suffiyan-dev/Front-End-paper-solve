@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Image as ImageIcon, Send } from 'lucide-react';
 import { Button } from '../ui/Button';
-import { Input } from '../ui/Input';
 import { cn } from '../../lib/utils';
 
 interface ComposerProps {

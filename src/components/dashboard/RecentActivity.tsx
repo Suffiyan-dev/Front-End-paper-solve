@@ -1,5 +1,4 @@
 import React from 'react';
-import { cn } from '../../lib/utils';
 import { Clock, MessageSquare, ChevronRight } from 'lucide-react';
 
 interface ActivityItem {

@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { cn } from '../../lib/utils';
 import { boardsOf, levelsOf, subjectsOf, type SubjectInfo } from '../../lib/subjects';
 import { MarksSelector } from '../ui/MarksSelector';
 import BoardSelector from './BoardSelector';
