@@ -1,7 +1,5 @@
 import React from 'react';
 import { Logo } from '../Logo';
-import { Button } from '../ui/Button';
-import { cn } from '../../lib/utils';
 
 interface ExamplePrompt {
   text: string;

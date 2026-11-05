@@ -30,3 +30,12 @@ If you are developing a production application, we recommend enabling type-aware
 ```
 
 See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+
+## Subjects come from the API
+
+The board, level and subject pickers (dashboard and settings) are built from the PaperSolve API's `GET /subjects`.
+Nothing in this app names a subject: add a subject config on the server, restart the API, reload the page, and it is listed.
+Subjects that are not ready yet (`available: false`) are shown disabled with "Coming soon"; subjects still being measured show "Beta".
+
+The API address is `VITE_API_URL` (default `http://localhost:8000`). The API allows `http://localhost:5173` by default, and other
+origins through its `PAPERSOLVE_CORS_ORIGINS` setting.
