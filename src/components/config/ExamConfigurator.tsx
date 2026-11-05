@@ -1,16 +1,17 @@
 import React, { useState } from 'react';
 import { cn } from '../../lib/utils';
-import { BOARDS, LEVELS } from '../../constants/exam';
+import { boardsOf, levelsOf, subjectsOf, type SubjectInfo } from '../../lib/subjects';
 import { MarksSelector } from '../ui/MarksSelector';
 import BoardSelector from './BoardSelector';
 import LevelSelector from './LevelSelector';
 import SubjectSelector from './SubjectSelector';
+import SubjectsGate from './SubjectsGate';
 
 interface ExamConfiguratorProps {
   onConfigComplete: (config: { board: string, level: string, subject: string, marks: number }) => void;
 }
 
-const ExamConfigurator: React.FC<ExamConfiguratorProps> = ({ onConfigComplete }) => {
+const ExamConfiguratorBody: React.FC<ExamConfiguratorProps & { subjects: SubjectInfo[] }> = ({ onConfigComplete, subjects }) => {
   const [config, setConfig] = useState({
     board: '' as string | null,
     level: '' as string | null,
@@ -54,6 +55,7 @@ const ExamConfigurator: React.FC<ExamConfiguratorProps> = ({ onConfigComplete })
           <label className="text-sm font-bold text-text-heading uppercase tracking-wider">Select Examination Board</label>
         </div>
         <BoardSelector
+          boards={boardsOf(subjects)}
           selectedBoard={config.board}
           onSelect={(id) => updateConfig('board', id)}
         />
@@ -67,7 +69,7 @@ const ExamConfigurator: React.FC<ExamConfiguratorProps> = ({ onConfigComplete })
             <label className="text-sm font-bold text-text-heading uppercase tracking-wider">Select Level</label>
           </div>
           <LevelSelector
-            levels={LEVELS[config.board] || []}
+            levels={levelsOf(subjects, config.board)}
             selectedLevel={config.level}
             onSelect={(l) => updateConfig('level', l)}
           />
@@ -82,6 +84,7 @@ const ExamConfigurator: React.FC<ExamConfiguratorProps> = ({ onConfigComplete })
             <label className="text-sm font-bold text-text-heading uppercase tracking-wider">Select Subject</label>
           </div>
           <SubjectSelector
+            subjects={subjectsOf(subjects, config.board, config.level)}
             selectedSubject={config.subject}
             onSelect={(s) => updateConfig('subject', s)}
           />
@@ -122,5 +125,9 @@ const ExamConfigurator: React.FC<ExamConfiguratorProps> = ({ onConfigComplete })
 
 import { Button } from '../ui/Button';
 import { ChevronRight } from 'lucide-react';
+
+const ExamConfigurator: React.FC<ExamConfiguratorProps> = (props) => (
+  <SubjectsGate>{(subjects) => <ExamConfiguratorBody {...props} subjects={subjects} />}</SubjectsGate>
+);
 
 export default ExamConfigurator;

@@ -13,7 +13,8 @@ import { cn } from '../lib/utils';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { Card } from '../components/ui/Card';
-import { BOARDS, LEVELS, SUBJECTS } from '../constants/exam';
+import SubjectsGate from '../components/config/SubjectsGate';
+import { boardsOf, levelsOf, subjectsOf } from '../lib/subjects';
 
 type Category = 'account' | 'academic' | 'appearance' | 'chat' | 'account-actions';
 
@@ -21,7 +22,7 @@ type Category = 'account' | 'academic' | 'appearance' | 'chat' | 'account-action
 const Settings: React.FC = () => {
   const [activeCategory, setActiveCategory] = useState<Category>('account');
   const [account, setAccount] = useState({ name: 'Zaid Ahmed', email: 'zaid@example.com' });
-  const [academic, setAcademic] = useState({ board: 'cambridge', level: 'O Level', subjects: ['Physics'] });
+  const [academic, setAcademic] = useState({ board: 'cambridge', level: 'o-level', subjects: ['physics'] });
   const [appearance, setAppearance] = useState('system');
   const [chatPrefs, setChatPrefs] = useState({ saveHistory: true, formatting: 'detailed' });
 
@@ -124,13 +125,15 @@ const Settings: React.FC = () => {
               </div>
 
               <Card className="p-6 space-y-8">
+                <SubjectsGate>{(subjects) => (<>
                 <div className="space-y-4">
                   <label className="text-xs font-bold text-text-muted uppercase tracking-wider">Default Board</label>
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                    {BOARDS.map(b => (
+                    {boardsOf(subjects).map(b => (
                       <button
                         key={b.id}
-                        onClick={() => setAcademic({...academic, board: b.id})}
+                        disabled={b.available === 0}
+                        onClick={() => setAcademic({...academic, board: b.id, level: levelsOf(subjects, b.id).find(l => l.available > 0)?.id ?? '', subjects: []})}
                         className={cn(
                           "px-3 py-2 rounded-lg border text-sm transition-all text-center",
                           academic.board === b.id
@@ -147,18 +150,19 @@ const Settings: React.FC = () => {
                 <div className="space-y-4">
                   <label className="text-xs font-bold text-text-muted uppercase tracking-wider">Default Level</label>
                   <div className="flex flex-wrap gap-3">
-                    {LEVELS[academic.board]?.map(l => (
+                    {levelsOf(subjects, academic.board).map(l => (
                       <button
-                        key={l}
-                        onClick={() => setAcademic({...academic, level: l})}
+                        key={l.id}
+                        disabled={l.available === 0}
+                        onClick={() => setAcademic({...academic, level: l.id, subjects: []})}
                         className={cn(
                           "px-4 py-2 rounded-full border text-sm transition-all",
-                          academic.level === l
+                          academic.level === l.id
                             ? "bg-brand-primary text-white border-brand-primary"
                             : "bg-white text-text-body border-surface-border hover:border-brand-primary/50"
                         )}
                       >
-                        {l}
+                        {l.name}
                       </button>
                     ))}
                   </div>
@@ -167,10 +171,12 @@ const Settings: React.FC = () => {
                 <div className="space-y-4">
                   <label className="text-xs font-bold text-text-muted uppercase tracking-wider">Favorite Subjects</label>
                   <div className="flex flex-wrap gap-2">
-                    {SUBJECTS.map(s => (
+                    {subjectsOf(subjects, academic.board, academic.level).map(subject => (
                       <button
-                        key={s}
+                        key={subject.slug}
+                        disabled={!subject.available}
                         onClick={() => {
+                          const s = subject.slug;
                           const newSubs = academic.subjects.includes(s)
                             ? academic.subjects.filter(sub => sub !== s)
                             : [...academic.subjects, s];
@@ -178,16 +184,18 @@ const Settings: React.FC = () => {
                         }}
                         className={cn(
                           "px-3 py-1.5 rounded-md border text-xs transition-all",
-                          academic.subjects.includes(s)
+                          !subject.available && "opacity-50 cursor-not-allowed",
+                          academic.subjects.includes(subject.slug)
                             ? "bg-brand-primary/10 border-brand-primary text-brand-primary font-bold"
                             : "bg-white border-surface-border text-text-muted"
                         )}
                       >
-                        {s}
+                        {subject.name}{subject.available ? '' : ' (coming soon)'}
                       </button>
                     ))}
                   </div>
                 </div>
+                </>)}</SubjectsGate>
               </Card>
             </div>
           )}
