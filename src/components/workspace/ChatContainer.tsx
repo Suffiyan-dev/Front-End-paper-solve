@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useSubjects } from '../../hooks/useSubjects';
 import ContextBar from './ContextBar';
 import EmptyState from './EmptyState';
 import Composer from './Composer';
@@ -10,15 +11,18 @@ const ChatContainer: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isInitial, setIsInitial] = useState(true);
 
-  // Mock metadata for the current session
-  const [sessionMetadata] = useState<QuestionMetadata>({
-    board: 'Cambridge',
-    level: 'O Level',
-    subject: 'Physics',
+  // The session starts on the first subject the server can answer, so no subject is named here.
+  const subjects = useSubjects();
+  const first = subjects.status === 'ready' ? subjects.subjects.find((s) => s.available) : undefined;
+  const sessionMetadata: QuestionMetadata = {
+    board: first?.board_name ?? '',
+    level: first?.level_name ?? '',
+    subject: first?.name ?? (subjects.status === 'error' ? 'Subjects unavailable' : 'Loading…'),
     marks: 5,
-  });
+  };
 
   const handleSend = (text: string) => {
+    if (!first) return;
     setIsInitial(false);
 
     // User Message
